@@ -1,24 +1,40 @@
 describe('Visitar a página inicial', () => {
-    beforeEach(() => {
-      cy.visit('/')
-        cy.get('.r-f4gmv6 > :nth-child(2) > .css-175oi2r').click()
-    const login = {
-        email: Cypress.env('USER_EMAIL'),
-        password: Cypress.env('USER_PASSWORD'),
-      }
-      cy.illMandatoryFieldsAndSubmit(login)
-      cy.get('.r-16y2uox > .r-1t01tom > .css-175oi2r').click()
-    })
-    it('Completar dados Nutricionais', () => {
-     
-     
-      cy.get(':nth-child(1) > .r-uaa2di > .r-42olwf > .css-175oi2r > .css-11aywtz').type('180') // altura
-      cy.get('.r-8d26hk > .r-f4gmv6 > :nth-child(2) > .r-uaa2di > .r-rs99b7 > .css-175oi2r > .css-11aywtz').type('95')  //peso atual
-      cy.get('.r-42olwf > .css-175oi2r > .css-11aywtz').type('80') //peso desejado
-      cy.get('div[class="css-175oi2r r-1cmwbt1 r-1v1z2uz"]')
-      .contains('Atividade leve')
-      .click()
-      cy.get(':nth-child(4) > .r-1i6wzkk > .css-175oi2r').click()
-      
-})  
+  const email = Cypress.env('USER_EMAIL')
+  const password = Cypress.env('USER_PASSWORD')
+
+  beforeEach(() => {
+    cy.visit('/')
+  })
+
+  it('Completar dados Nutricionais', () => {
+    cy.login(email, password)
+
+    // Altura
+    cy.get('input[placeholder="Ex.: 1,60"]', { timeout: 10000 })
+      .should('be.visible')
+      .clear()
+      .type('160')
+
+    // Peso atual
+    cy.get('input[placeholder="Ex.: 60 kg"]')
+      .should('be.visible')
+      .clear()
+      .type('55')
+
+    // Peso desejado (segundo input que termina com "kg")
+    cy.get('input[placeholder^="Ex.:"][placeholder$="kg"]')
+      .eq(1)
+      .should('be.visible')
+      .clear()
+      .type('50')
+
+    cy.get('div.css-175oi2r.r-1cmwbt1.r-1v1z2uz')
+      .find('div.css-146c3p1.r-i1xj32.r-k9x4vz.r-ubezar.r-1cwl3u0')
+      .contains('Pouca atividade')
+      .click();
+
+
+
+  })
+
 })

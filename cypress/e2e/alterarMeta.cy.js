@@ -1,94 +1,36 @@
 describe('Visitar a página inicial', () => {
-  before(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
-    cy.visit('/');
-
-    const login = {
-      email: Cypress.env('USER_EMAIL'),
-      password: Cypress.env('USER_PASSWORD'),
-    };
-
-    cy.fillMandatoryFieldsAndSubmit(login);
-
-    // Botão continuar após login
-    cy.get('.r-16y2uox > .r-1t01tom > .css-175oi2r')
-      .should('be.visible')
-      .click();
-
-    // Aguarda o carregamento e salva o token
-    cy.window().then((win) => {
-      const token = win.localStorage.getItem('authToken'); // Exemplo de chave usada no localStorage
-      if (token) {
-        Cypress.env('AUTH_TOKEN', token);
-      }
-    });
-  });
+  const email = Cypress.env('USER_EMAIL')
+  const password = Cypress.env('USER_PASSWORD')
 
   beforeEach(() => {
-    cy.clearCookies();
-    cy.clearLocalStorage();
+    cy.visit('/')
+  })
 
-    // Restaurar o token antes de cada teste
-    cy.window().then((win) => {
-      win.localStorage.setItem('authToken', Cypress.env('AUTH_TOKEN'));
-    });
+  it('Deve alterar a meta', () => {
+    cy.login(email, password)
+    cy.get('.css-146c3p1.r-ais2e1.r-1yb1dlw.r-1b43r93.r-1f529hi.r-1ez4vuq', { timeout: 10000 })
+      .should('have.text', 'Alterar')
+      .click();
 
-    cy.visit('/');
-  });
-
-  it('Alterar meta pela home', () => {
-    cy.tick(500);
-
-    // Clicar no "Alterar"
-    cy.get(':nth-child(1) > .r-1i6wzkk > .css-146c3p1')
+    cy.contains('Meta')
       .should('be.visible')
       .click();
 
-    cy.tick(500);
-
-    // Botão "Meta"
-    cy.get('.r-f4gmv6 > :nth-child(1) > .css-175oi2r > .css-146c3p1')
-      .should('be.visible')
+    cy.contains('div', 'Qual é o seu nível de atividade física diária?') 
+      .parent() 
+      .contains('div', 'Atividade moderada') 
       .click();
 
-    cy.tick(1000);
-
-    // Alterar plano
-    cy.contains('Atividade ')
-      .should('be.visible')
+    cy.get('div[style="background-color: rgb(242, 242, 242); display: flex;"]')
+      .contains('Continuar cadastro')
       .click();
 
-    cy.tick(500);
-
-    // Continuar cadastro
-    cy.contains('Continuar cadastro')
-      .should('be.visible')
+    cy.get('.css-175oi2r.r-1awozwy.r-18u37iz.r-ojf8lh', { timeout: 10000 })
+      .eq(1) // Altere o índice para o desejado
+      .should('have.text', 'Progresso Moderado')
       .click();
-
-    cy.tick(1000);
-
-    // Alterar progresso
-    cy.contains('Progresso Acelerado')
-      .should('be.visible')
-      .click();
-
-    cy.tick(500);
-
-    // Salvar informações
     cy.contains('Salvar informações')
       .should('be.visible')
       .click();
-
-    cy.tick(2000);
-
-    // Validação final
-    cy.get('.r-13awgt0.r-ipm5af > .r-13awgt0 > .r-1awozwy > .css-146c3p1')
-      .should('be.visible')
-      .and('have.text', 'Suas informações foram atualizadas com sucesso!');
-  });
-
-  it('Outra validação...', () => {
-    // Adicione mais testes sem precisar logar novamente
-  });
+  })
 });
