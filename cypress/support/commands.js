@@ -20,6 +20,7 @@ Cypress.Commands.add('login', (username, password) => {
     .click()
 
   })
+
   Cypress.Commands.add('cadastrar', ({email, password, confirmPassword}) => {
     cy.get('input[placeholder*="@"]').should('be.visible').type(email)
     cy.get('input[type="password"][placeholder="**********"]').eq(0).type(password)
@@ -34,5 +35,25 @@ Cypress.Commands.add('login', (username, password) => {
     cy.get('input[placeholder="(DDD) + número de telefone"]').type(tel)
     cy.get('input[placeholder="dd/mm/aaaa"]').type(birthday)
   })
+
+  Cypress.Commands.add('validaRegrasSenha', (regras) => {
+    const criterios = {
+      maiuscula: 'Letras maiúsculas (A-Z)',
+      minuscula: 'Letras minúsculas (a-z)',
+      numero: 'Números (0-9)',
+      especial: 'Caracteres especiais',
+      minimo8: '8 caracteres de extensão'
+    }
+  
+    Object.entries(regras).forEach(([chave, esperado]) => {
+      const texto = criterios[chave]
+  
+      cy.contains(texto)
+        .parent()
+        .find('svg path')
+        .should(`${esperado ? '' : 'not.'}have.attr`, 'fill', '#14AE5C')
+    })
+  })
+  
   
   

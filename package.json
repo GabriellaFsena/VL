@@ -1,9 +1,15 @@
 {
   "devDependencies": {
-    "cypress": "^14.1.0"
+    "cypress": "^14.1.0",
+    "start-server-and-test": "^2.0.11",
+    "wait-on": "^8.0.3"
   },
-  "scripts": {
-    "cy:open": "cypress open",
-    "test": "cypress run"
-  }
+"scripts": {
+  "wait-api": "wait-on https://vida-leve-h7ug.onrender.com/users/profile/all",
+  "cy:run": "cypress run",
+  "cy:open": "cypress open",
+  "test": "start-server-and-test wait-api https://vida-leve-h7ug.onrender.com/users/profile/all cy:run",
+  "test:open": "start-server-and-test wait-api https://vida-leve-h7ug.onrender.com/users/profile/all cy:open"
 }
+}
+
